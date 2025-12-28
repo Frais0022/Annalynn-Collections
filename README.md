@@ -42,10 +42,6 @@ input,select{padding:8px;width:100%;margin-bottom:6px;}
 <!-- ADMIN PANEL -->
 <section id="admin-panel" style="display:none;background:#fff;padding:16px;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,.08);margin-bottom:20px">
 <h2>Admin Dashboard</h2>
-<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px">
-<div class="card">Products: <b id="stat-products">0</b></div>
-<div class="card">Low Stock: <b id="stat-low">0</b></div>
-</div>
 
 <h3 id="admin-form-title">Add New Product</h3>
 <input type="hidden" id="edit-id">
@@ -93,22 +89,12 @@ input,select{padding:8px;width:100%;margin-bottom:6px;}
 </div>
 
 <!-- ADMIN LOGIN -->
-<div id="login" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:center;justify-content:center">
+<div id="login" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:center;justify-content:center;display:flex">
 <div style="background:#fff;padding:20px;border-radius:10px;width:280px">
 <h3>Admin Login</h3>
 <input id="admin-pass" type="password" placeholder="Password">
 <button class="btn btn-primary" onclick="login()">Login</button>
 </div>
-</div>
-
-<!-- INVOICE -->
-<div id="invoice" style="display:none;padding:30px">
-<h2>Anna-Lynn Collections</h2>
-<div id="inv-info"></div>
-<hr>
-<div id="inv-items"></div>
-<h3 id="inv-total"></h3>
-<button onclick="window.print()">Print</button>
 </div>
 
 <script src="https://js.paystack.co/v1/inline.js"></script>
@@ -224,7 +210,12 @@ for(let m in monthly) reportDiv.innerHTML+=`${m}: ₦${monthly[m].toLocaleString
 }
 
 function openAdmin(){isAdmin?admin-panel.style.display="block":login.style.display="flex"}
-function login(){if(admin-pass.value===ADMIN_PASS){isAdmin=true;login.style.display="none";admin-panel.style.display="block";render()}else alert("Wrong password");}
+
+function login(){
+const pass=document.getElementById("admin-pass").value;
+if(pass===ADMIN_PASS){isAdmin=true;login.style.display="none";admin-panel.style.display="block";render();}
+else alert("Wrong password");
+}
 
 function addProduct(){
 const id=document.getElementById("edit-id").value;
@@ -248,8 +239,6 @@ document.getElementById("admin-form-title").textContent="Edit Product";
 function del(id){if(!confirm("Delete this product?"))return;products=products.filter(p=>p.id!==id);save();render();}
 
 function updateAdminPanel(){if(!isAdmin)return;
-document.getElementById("stat-products").textContent=products.length;
-document.getElementById("stat-low").textContent=products.filter(p=>p.stock<=2).length;
 let container=document.getElementById("admin-products");container.innerHTML="";
 products.forEach(p=>{container.innerHTML+=`<div class="card" style="display:flex;justify-content:space-between;align-items:center"><div><b>${p.name}</b><br>₦${p.price.toLocaleString()} | Stock: ${p.stock}</div><div><button class="btn" onclick="editProduct('${p.id}')">Edit</button><button class="btn" onclick="del('${p.id}')">Delete</button></div></div>`;});}
 
